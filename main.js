@@ -159,11 +159,6 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(windowSize.width, windowSize.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-// Fog(color, near clip, far clip)
-// Fog prevents plane pop-ins, but makes the sun pitch black.
-// const fog = new THREE.Fog(BLACK, 1, 2.25);
-// scene.fog = fog
-
 const effectComposer = new EffectComposer(renderer);
 effectComposer.setSize(windowSize.width, windowSize.height);
 effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -208,11 +203,11 @@ window.addEventListener("resize", () => {
   camera.aspect = windowSize.width / windowSize.height;
   camera.updateProjectionMatrix();
 
-  renderer.setSize(windowSize.width / windowSize.height);
-  renderer.setPixelRatio(Math.min(windowSize.devicePixelRatio), 2);
+  renderer.setSize(windowSize.width, windowSize.height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio), 2);
 
-  effectComposer.setSize(windowSize.width / windowSize.height);
-  effectComposer.setPixelRatio(Math.min(windowSize.devicePixelRatio), 2);
+  effectComposer.setSize(windowSize.width, windowSize.height);
+  effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
 // Clock() tracks the elapsed time since the loop started.
