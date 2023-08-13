@@ -18,7 +18,6 @@ stats.dom.style.left = "0";
 document.body.appendChild(stats.dom);
 
 // Colors
-const BLACK = "#000000";
 const PINK = "#ed11ff";
 const TURQUOISE = "#26ead7";
 
@@ -51,6 +50,17 @@ const material = new THREE.MeshStandardMaterial({
   roughness: 0.65
 });
 // Geometry + Material = Mesh
+
+// Sun
+const SUN_COLOR = "#CCCCCC"
+const sunRadius = 0.9
+const sunGeometry = new THREE.SphereGeometry(sunRadius, 32, 32);
+const sunMaterial = new THREE.MeshBasicMaterial({
+  color: SUN_COLOR,
+});
+const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+sun.position.set(0, 0.2, -4);
+scene.add(sun);
 
 // Plane (the landscape) is positioned in front of the camera.
 const plane = new THREE.Mesh(geometry, material);
@@ -129,9 +139,11 @@ renderer.setSize(windowSize.width, windowSize.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 // Fog(color, near clip, far clip)
-const fog = new THREE.Fog(BLACK, 1, 2.25);
-scene.fog = fog
+// Fog prevents plane pop-ins, but makes the sun pitch black.
+// const fog = new THREE.Fog(BLACK, 1, 2.25);
+// scene.fog = fog
 
+// Post-processing stuff.
 const effectComposer = new EffectComposer(renderer);
 effectComposer.setSize(windowSize.width, windowSize.height)
 effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
