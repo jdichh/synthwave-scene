@@ -31,15 +31,15 @@ const terrain = textureLoader.load(TERRAIN);
 const canvas = document.querySelector(".webGL");
 const scene = new THREE.Scene();
 
-// Geometry width is 1, height is 2, and then divided by 24 segments along the width and height to enhance terrain detail.
-const geometry = new THREE.PlaneGeometry(2, 2, 24, 24);
+// Landscape width is 3, height is 2, and then divided by 24 segments along the width and height to enhance terrain detail.
+const geometry = new THREE.PlaneGeometry(3, 2, 24, 24);
 
 // Material is the texture. Or if you're a gamer™, a weapon skin.
 const material = new THREE.MeshStandardMaterial({
   map: gridLandscape,
   displacementMap: terrain,
   // Height of "mountains".
-  displacementScale: 0.65,
+  displacementScale: 0.8,
 });
 // Geometry + Material = Mesh
 
@@ -63,6 +63,10 @@ scene.add(plane);
 scene.add(plane2);
 scene.add(plane3);
 
+// Fog(color, near clip, far clip)
+const fog = new THREE.Fog("#000000", 1, 4.5);
+scene.fog = fog
+
 // AmbientLight(color, intensity)
 const ambientLight = new THREE.AmbientLight("#ffffff", 15);
 scene.add(ambientLight);
@@ -84,7 +88,7 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 camera.position.x = 0;
-camera.position.y = 0.06;
+camera.position.y = 0.125;
 camera.position.z = 1;
 
 // DEVTOOLS! Not meant for normal users/viewers.
