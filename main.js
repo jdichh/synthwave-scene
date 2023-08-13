@@ -1,21 +1,27 @@
 import * as THREE from "three";
 import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
 
+const TEXTURE = "./public/assets/grid.webp";
+const textureLoader = new THREE.TextureLoader();
+const gridLandscape = textureLoader.load(TEXTURE)
+
 const canvas = document.querySelector(".webGL");
 const scene = new THREE.Scene();
 
-// Width is 1, height is 2, and then divided by 24 squares along the width and height.
+// Geometry width is 1, height is 2, and then divided by 24 segments along the width and height to enhance terrain detail.
 const geometry = new THREE.PlaneGeometry(1, 2, 24, 24);
+
+// Material is the texture. Or if you're a gamer™, a weapon skin.
 const material = new THREE.MeshBasicMaterial({
-  color: 0xfff,
+  map: gridLandscape,
 });
-const plane = new THREE.Mesh(geometry, material);
+// Geometry + Material = Mesh
 
 // Plane (the landscape) is positioned in front of the camera.
+const plane = new THREE.Mesh(geometry, material);
 plane.rotation.x = -Math.PI * 0.5;
 plane.position.y = 0;
 plane.position.z = 0.15;
-
 scene.add(plane);
 
 const windowSize = {
@@ -41,6 +47,7 @@ camera.position.z = 1;
 
 // DEVTOOLS! Not meant for normal users/viewers.
 const controls = new OrbitControls(camera, canvas);
+// Enabling damping is like scroll-behavior: smooth in CSS.
 controls.enableDamping = true;
 // DEVTOOLS!
 
