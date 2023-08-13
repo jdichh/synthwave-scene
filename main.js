@@ -1,16 +1,6 @@
-/* To-do List™ 
-  Displacement map for terrain
-   - Middle geometry is flat
-   - Sides are "mountainous"
-   - Low poly or nah?
-  Endless terrain
-   - 2nd copy of terrain?
-   - Move 1st copy of terrain after 2nd copy when the first copy has "ended"?
-   Plane popup fix
-   - Add fog?
-*/
+
 import * as THREE from "three";
-// import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
+import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
 import { EffectComposer } from "./node_modules/three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "./node_modules/three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "./node_modules/three/examples/jsm/postprocessing/ShaderPass.js";
@@ -32,17 +22,20 @@ const BLACK = "#000000";
 const PINK = "#ed11ff";
 const TURQUOISE = "#26ead7";
 
-const TEXTURE = "./public/assets/grid.webp";
-const TERRAIN = "./public/assets/terrain_data.webp";
-const SHINY = "./public/assets/shinystuff.webp"
+const TEXTURE = "./assets/grid.webp";
+const TERRAIN = "./assets/terrain_data.webp";
+const SHINY = "./assets/shinystuff.webp"
+const SKYBOX = "./assets/skybox.webp"
 
 const textureLoader = new THREE.TextureLoader();
 const gridLandscape = textureLoader.load(TEXTURE);
 const terrain = textureLoader.load(TERRAIN);
 const shinystuff = textureLoader.load(SHINY);
+const sky = textureLoader.load(SKYBOX)
 
 const canvas = document.querySelector(".webGL");
 const scene = new THREE.Scene();
+scene.background = sky;
 
 // Landscape width is 1, height is 2, and then divided by 24 segments along the width and height to enhance terrain detail.
 const geometry = new THREE.PlaneGeometry(1, 2, 24, 24);
@@ -80,7 +73,7 @@ scene.add(plane2);
 scene.add(plane3);
 
 // AmbientLight(color, intensity)
-const ambientLight = new THREE.AmbientLight("#TURQUOISE", 20);
+const ambientLight = new THREE.AmbientLight("TURQUOISE", 20);
 scene.add(ambientLight);
 
 // Right spotlight pointing to the left.
@@ -124,9 +117,9 @@ camera.position.y = 0.05;
 camera.position.z = 1;
 
 // DEVTOOLS! Not meant for normal users/viewers.
-// const controls = new OrbitControls(camera, canvas);
+const controls = new OrbitControls(camera, canvas);
 // Enabling damping is like scroll-behavior: smooth in CSS.
-// controls.enableDamping = true;
+controls.enableDamping = true;
 // DEVTOOLS!
 
 const renderer = new THREE.WebGLRenderer({
@@ -134,9 +127,6 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(windowSize.width, windowSize.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-// const backgroundColor = new THREE.Color("#000000")
-// scene.background = backgroundColor;
 
 // Fog(color, near clip, far clip)
 const fog = new THREE.Fog(BLACK, 1, 2.25);
@@ -186,7 +176,7 @@ const updateFrame = () => {
   // Returns time in seconds.
   const elapsedTime = clock.getElapsedTime();
   // Devtool
-  // controls.update();
+  controls.update();
   /* Enables looping effect along with requestAnimationFrame.
     (elapsedTime * speed) % 2 enables smooth z-movement. 
     When '% 2' reaches 2, it resets the loop to 0. 
