@@ -1,0 +1,76 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  margin: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
+canvas.webGL {
+  width: 100%;
+  height: 100vh;
+}
+
+#music-toggle-button {
+  position: absolute;
+  top: 1%;
+  right: 0.6%;
+  padding: 0.5% 1%;
+  background: rgba(32, 32, 32, 0.5);
+  cursor: pointer;
+  color: rgb(220, 220, 220);
+  border: none;
+  outline: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#music-toggle-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgb(220, 220, 220);
+  outline: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+#volume-slider {
+  position: absolute;
+  margin-top: 5%;
+  right: -1%;
+  width: 6%;
+  cursor: pointer;
+  background: none;
+  border: none;
+  transform: rotate(270deg);
+}
+
+#volume-slider::-webkit-slider-runnable-track {
+  background-color: rgba(220, 220, 220, 0.2);
+  height: 4px;
+}
+
+#volume-slider::-moz-range-track {
+  background-color: rgba(220, 220, 220, 0.2);
+  height: 4px;
+}
+
+#volume-slider::-webkit-slider-thumb,
+#volume-slider::-moz-range-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background-color: #26ead7;
+  border: 1px solid #26ead7;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  #volume-slider {
+    top: 2.5%;
+    background-color: rgb(16, 16, 16);
+    height: 4px;
+  }
+}
+
+/* I don't know yet how to change the styling of the thumb on Chrome based browsers, sorry! */
