@@ -12,7 +12,7 @@ const scene = new THREE.Scene();
 const geometry = new THREE.PlaneGeometry(1, 2, 24, 24);
 
 // Material is the texture. Or if you're a gamer™, a weapon skin.
-const material = new THREE.MeshBasicMaterial({
+const material = new THREE.MeshStandardMaterial({
   map: gridLandscape,
 });
 // Geometry + Material = Mesh
@@ -23,6 +23,10 @@ plane.rotation.x = -Math.PI * 0.5;
 plane.position.y = 0;
 plane.position.z = 0.15;
 scene.add(plane);
+
+// AmbientLight(color, intensity)
+const ambientLight = new THREE.AmbientLight("#ffffff", 15);
+scene.add(ambientLight);
 
 const windowSize = {
   width: window.innerWidth,
@@ -42,8 +46,8 @@ const camera = new THREE.PerspectiveCamera(
 );
 
 camera.position.x = 0;
-camera.position.y = 0.7;
-camera.position.z = 1;
+camera.position.y = 0.1;
+camera.position.z = 0.9;
 
 // DEVTOOLS! Not meant for normal users/viewers.
 const controls = new OrbitControls(camera, canvas);
