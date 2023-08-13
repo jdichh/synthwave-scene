@@ -1,11 +1,11 @@
 import * as THREE from "three";
 // import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
+import { RGBShiftShader } from "./node_modules/three/examples/jsm/shaders/RGBShiftShader.js";
 import { EffectComposer } from "./node_modules/three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "./node_modules/three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "./node_modules/three/examples/jsm/postprocessing/ShaderPass.js";
-import { RGBShiftShader } from "./node_modules/three/examples/jsm/shaders/RGBShiftShader.js";
-import { GammaCorrectionShader } from "./node_modules/three/examples/jsm/shaders/GammaCorrectionShader.js";
 import { UnrealBloomPass } from "./node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { FilmPass } from "./node_modules/three/examples/jsm/postprocessing/FilmPass.js";
 import WebGL from "three/addons/capabilities/WebGL.js";
 
 if (!WebGL.isWebGLAvailable()) {
@@ -23,8 +23,9 @@ if (!WebGL.isWebGLAvailable()) {
 // document.body.appendChild(stats.dom);
 
 // Colors
-const PINK = "#ed11ff";
-const TURQUOISE = "#26ead7";
+const PINK = "#FF0133";
+const WHITE = "#CCCCCC";
+const TURQUOISE = "#60E4FF";
 
 const TEXTURE = "./assets/grid.webp";
 const TERRAIN = "./assets/terrain_data.webp";
@@ -41,15 +42,15 @@ const canvas = document.querySelector(".webGL");
 const scene = new THREE.Scene();
 scene.background = sky;
 
-// Landscape width is 1, height is 2, and then divided by 24 segments along the width and height to enhance terrain detail.
-const geometry = new THREE.PlaneGeometry(0.95, 2, 24, 24);
+// Landscape width is 1.25, height is 2, and then divided by 24 segments along the width and height to enhance terrain detail.
+const geometry = new THREE.PlaneGeometry(1.25, 2, 24, 24);
 
 // Material is the texture. Or if you're a gamer™, a weapon skin.
 const material = new THREE.MeshStandardMaterial({
   map: gridLandscape,
   displacementMap: terrain,
   // Height of "mountains".
-  displacementScale: 0.65,
+  displacementScale: 0.8,
   metalnessMap: shinystuff,
   metalness: 1,
   roughness: 0.65,
@@ -57,15 +58,23 @@ const material = new THREE.MeshStandardMaterial({
 // Geometry + Material = Mesh
 
 // Sun
-const SUN_COLOR = "#CCCCCC";
-const sunRadius = 1.1;
+const SUN_COLOR = "#707070";
+const SUNRAY_INTENSITY = 10;
+const sunRadius = 1.6;
+
 const sunGeometry = new THREE.SphereGeometry(sunRadius, 32, 32);
-const sunMaterial = new THREE.MeshBasicMaterial({
+const sunMaterial = new THREE.MeshStandardMaterial({
   color: SUN_COLOR,
+  emissive: SUN_COLOR,
 });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 sun.position.set(0, 0.3, -4);
 scene.add(sun);
+
+// Sun rays
+const sunLight = new THREE.DirectionalLight(SUN_COLOR, SUNRAY_INTENSITY);
+sunLight.position.set(0, 1, -1); // Set the direction of the light
+scene.add(sunLight);
 
 // Plane (the landscape) is positioned in front of the camera.
 const plane = new THREE.Mesh(geometry, material);
@@ -88,26 +97,32 @@ scene.add(plane2);
 scene.add(plane3);
 
 // AmbientLight(color, intensity)
-const ambientLight = new THREE.AmbientLight("TURQUOISE", 20);
+const ambientLight = new THREE.AmbientLight(WHITE, 10);
 scene.add(ambientLight);
 
 // Right spotlight pointing to the left.
-const spotlight = new THREE.SpotLight(TURQUOISE, 25, 100, Math.PI * 0.1, 0.25);
-spotlight.position.set(0.5, 0.75, 2.2);
+const spotlight = new THREE.SpotLight(PINK, 100, 100, Math.PI * 0.1, 0.25);
+spotlight.position.set(0.5, 0.75, 2.1);
 // Specific target for the right spotlight.
-spotlight.target.position.x = -0.25;
-spotlight.target.position.y = 0.2;
-spotlight.target.position.z = 1;
+spotlight.target.position.x = 0.25;
+spotlight.target.position.y = 0.25;
+spotlight.target.position.z = 0.25;
 scene.add(spotlight);
 scene.add(spotlight.target);
 
 // Left spotlight pointing to the right.
-const spotlight2 = new THREE.SpotLight(PINK, 25, 100, Math.PI * 0.1, 0.25);
-spotlight2.position.set(-0.5, 0.75, 2.2);
+const spotlight2 = new THREE.SpotLight(
+  TURQUOISE,
+  100,
+  100,
+  Math.PI * 0.1,
+  0.25
+);
+spotlight2.position.set(-0.5, 0.75, 2.1);
 // Specific target for the left spotlight.
 spotlight2.target.position.x = 0.25;
-spotlight2.target.position.y = 0.2;
-spotlight2.target.position.z = 1;
+spotlight2.target.position.y = 0.25;
+spotlight2.target.position.z = 0.25;
 scene.add(spotlight2);
 scene.add(spotlight2.target);
 
@@ -121,7 +136,7 @@ const windowSize = {
   Far Clipping Plane is the visibility of the background. Higher value means longer draw distance (Can see the scene further). Opposite for lower values.
 */
 const camera = new THREE.PerspectiveCamera(
-  75,
+  90,
   windowSize.width / windowSize.height,
   0.01,
   10
@@ -149,28 +164,39 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // const fog = new THREE.Fog(BLACK, 1, 2.25);
 // scene.fog = fog
 
-// Post-processing stuff.
 const effectComposer = new EffectComposer(renderer);
 effectComposer.setSize(windowSize.width, windowSize.height);
 effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+// Post-processing stuff.
 const renderPass = new RenderPass(scene, camera);
 effectComposer.addPass(renderPass);
 
 const rgbShiftPass = new ShaderPass(RGBShiftShader);
-rgbShiftPass.uniforms["amount"].value = 0.0012;
+rgbShiftPass.uniforms["amount"].value = 0.0008;
 effectComposer.addPass(rgbShiftPass);
-
-const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
-effectComposer.addPass(gammaCorrectionPass);
 
 const bloomPass = new UnrealBloomPass(
   new THREE.Vector2(window.innerWidth, window.innerHeight),
-  0.9,
-  0.5,
-  0.85
+  0.9, // These do nothing!!
+  0.5, // These do nothing!!
+  0.85 // These do nothing!!
 );
+
+// These work somehow!
+bloomPass.strength = 0.3;
+bloomPass.threshold = 0;
+bloomPass.radius = 1;
 effectComposer.addPass(bloomPass);
+
+// CRT Filter
+const filmPass = new FilmPass(
+  0.35, // noise intensity
+  0.75, // scanline intensity
+  2048, // scanline count
+  false // grayscale
+);
+effectComposer.addPass(filmPass);
 
 window.addEventListener("resize", () => {
   windowSize.width = window.innerWidth;
@@ -191,7 +217,7 @@ window.addEventListener("resize", () => {
 
 // Clock() tracks the elapsed time since the loop started.
 const clock = new THREE.Clock();
-const animationSpeed = 0.05;
+const animationSpeed = 0.03;
 
 const updateFrame = () => {
   // stats.begin()
@@ -254,14 +280,14 @@ volumeSlider.setAttribute("type", "range");
 volumeSlider.setAttribute("min", "0");
 volumeSlider.setAttribute("max", "1");
 volumeSlider.setAttribute("step", "0.01");
-volumeSlider.setAttribute("value", "0.15");
+volumeSlider.setAttribute("value", "0.25");
 volumeSlider.addEventListener("input", updateVolume);
 
 canvas.parentNode.appendChild(musicToggleButton);
 canvas.parentNode.appendChild(volumeSlider);
 
 // Default volume in case the user has autoplay enabled to prevent the user to be deaf after the page loads.
-audio.volume = 0.15;
+audio.volume = 0.25;
 
 // Set the initial volume based on the slider value.
 export function updateVolume() {

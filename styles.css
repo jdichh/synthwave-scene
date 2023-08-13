@@ -25,13 +25,13 @@ canvas.webGL {
   cursor: pointer;
   color: rgb(220, 220, 220);
   border: none;
-  outline: 1px solid #26ead7;
+  outline: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 #music-toggle-button:hover {
   background: rgba(255, 255, 255, 0.15);
   color: rgb(220, 220, 220);
-  outline: 1px solid rgba(255, 255, 255, 0.8);
+  outline: 1px solid#26ead7;
 }
 
 #volume-slider {
@@ -59,8 +59,8 @@ canvas.webGL {
   appearance: none;
   width: 16px;
   height: 16px;
-  background-color: #26ead7;
-  border: 1px solid #26ead7;
+  background-color: rgb(220,220,220);
+  border: 1px solid rgb(220,220,220);
   border-radius: 50%;
   cursor: pointer;
 }
