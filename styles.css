@@ -24,7 +24,7 @@ canvas.webGL {
   cursor: pointer;
   color: rgb(220, 220, 220);
   border: none;
-  outline: 1px solid rgba(255, 255, 255, 0.2);
+  outline: 1px solid #26ead7;
 }
 
 #music-toggle-button:hover {
@@ -35,22 +35,21 @@ canvas.webGL {
 
 #volume-slider {
   position: absolute;
-  margin-top: 5%;
-  right: -1%;
-  width: 6%;
+  top: 2%;
+  right: 4%;
+  width: 150px;
   cursor: pointer;
   background: none;
   border: none;
-  transform: rotate(270deg);
 }
 
 #volume-slider::-webkit-slider-runnable-track {
-  background-color: rgba(220, 220, 220, 0.2);
+  background-color: rgba(32, 32, 32, 0.5);
   height: 4px;
 }
 
 #volume-slider::-moz-range-track {
-  background-color: rgba(220, 220, 220, 0.2);
+  background-color: rgba(32, 32, 32, 0.5);
   height: 4px;
 }
 
@@ -68,9 +67,27 @@ canvas.webGL {
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   #volume-slider {
     top: 2.5%;
-    background-color: rgb(16, 16, 16);
+    background-color: rgb(32, 32, 32);
     height: 4px;
   }
+}
+
+@media screen and (max-width: 1200px) {
+  #music-toggle-button {
+    right: 2.5%;
+    padding: 10px 20px; 
+  }
+
+  #volume-slider {
+    position: absolute;
+    top: 2.5%;
+    left: 2.5%;
+    transform: translateX(-2.5%);
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  
 }
 
 /* I don't know yet how to change the styling of the thumb on Chrome based browsers, sorry! */
