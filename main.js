@@ -11,6 +11,12 @@
 */
 import * as THREE from "three";
 import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
+import { EffectComposer } from "./node_modules/three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "./node_modules/three/examples/jsm/postprocessing/RenderPass.js";
+import { ShaderPass } from "./node_modules/three/examples/jsm/postprocessing/ShaderPass.js";
+import { RGBShiftShader } from "./node_modules/three/examples/jsm/shaders/RGBShiftShader.js";
+import { GammaCorrectionShader } from "./node_modules/three/examples/jsm/shaders/GammaCorrectionShader.js";
+import { UnrealBloomPass } from "./node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 // FPS Data
 import Stats from 'stats.js';
@@ -20,6 +26,9 @@ stats.dom.style.position = "absolute";
 stats.dom.style.top = "0";
 stats.dom.style.left = "0";
 document.body.appendChild(stats.dom);
+
+// Colors
+const BLACK = "#000000";
 
 const TEXTURE = "./public/assets/grid.webp";
 const TERRAIN = "./public/assets/terrain_data.webp";
@@ -63,10 +72,6 @@ scene.add(plane);
 scene.add(plane2);
 scene.add(plane3);
 
-// Fog(color, near clip, far clip)
-const fog = new THREE.Fog("#000000", 1, 4.5);
-scene.fog = fog
-
 // AmbientLight(color, intensity)
 const ambientLight = new THREE.AmbientLight("#ffffff", 15);
 scene.add(ambientLight);
@@ -81,7 +86,7 @@ const windowSize = {
   Far Clipping Plane is the visibility of the background. Higher value means longer draw distance (Can see the scene further). Opposite for lower values.
 */
 const camera = new THREE.PerspectiveCamera(
-  75,
+  90,
   windowSize.width / windowSize.height,
   0.01,
   10 
@@ -103,6 +108,30 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(windowSize.width, windowSize.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+// const backgroundColor = new THREE.Color("#000000")
+// scene.background = backgroundColor;
+
+// Fog(color, near clip, far clip)
+const fog = new THREE.Fog(BLACK, 1, 4.5);
+scene.fog = fog
+
+const effectComposer = new EffectComposer(renderer);
+effectComposer.setSize(windowSize.width, windowSize.height)
+effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+const renderPass = new RenderPass(scene, camera);
+effectComposer.addPass(renderPass);
+
+const rgbShiftPass = new ShaderPass(RGBShiftShader);
+rgbShiftPass.uniforms['amount'].value = 0.0006;
+effectComposer.addPass(rgbShiftPass);
+
+const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
+effectComposer.addPass(gammaCorrectionPass);
+
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1, 0.2, 0.6);
+effectComposer.addPass(bloomPass);
+
 // Event listener for resizing events.
 window.addEventListener("resize", () => {
   // Update size based on current browser's size.
@@ -118,6 +147,9 @@ window.addEventListener("resize", () => {
   // Update renderer window size.
   renderer.setSize(windowSize.width / windowSize.height);
   renderer.setPixelRatio(Math.min(windowSize.devicePixelRatio), 2);
+
+  effectComposer.setSize(windowSize.width / windowSize.height);
+  effectComposer.setPixelRatio(Math.min(windowSize.devicePixelRatio), 2);
 });
 
 // Clock() tracks the elapsed time since the loop started.
@@ -141,6 +173,7 @@ const updateFrame = () => {
   plane3.position.z = ((elapsedTime * animationSpeed) % 2) - 4;
 
   renderer.render(scene, camera);
+  effectComposer.render();
   // Call updateFrame on every frame passed.
   window.requestAnimationFrame(updateFrame);
 
