@@ -3,12 +3,23 @@
    - Middle geometry is flat
    - Sides are "mountainous"
    - Low poly or nah?
-  Animating terrain moving to camera.
-   - Can't do plane.position.z += 0.5 -> Varies on FPS. -> DONE!
   Endless terrain
+   - 2nd copy of terrain?
+   - Move 1st copy of terrain after 2nd copy when the first copy has "ended"?
+   Plane popup fix
+   - Add fog?
 */
 import * as THREE from "three";
 import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
+
+// FPS Data
+import Stats from 'stats.js';
+const stats = new Stats()
+stats.showPanel(0);
+stats.dom.style.position = "absolute";
+stats.dom.style.top = "0";
+stats.dom.style.left = "0";
+document.body.appendChild(stats.dom);
 
 const TEXTURE = "./public/assets/grid.webp";
 const TERRAIN = "./public/assets/terrain_data.webp";
@@ -28,7 +39,7 @@ const material = new THREE.MeshStandardMaterial({
   map: gridLandscape,
   displacementMap: terrain,
   // Height of "mountains".
-  displacementScale: 0.7,
+  displacementScale: 0.65,
 });
 // Geometry + Material = Mesh
 
@@ -37,7 +48,20 @@ const plane = new THREE.Mesh(geometry, material);
 plane.rotation.x = -Math.PI * 0.5;
 plane.position.y = 0;
 plane.position.z = 0.15;
+
+const plane2 = new THREE.Mesh(geometry, material);
+plane2.rotation.x = -Math.PI * 0.5;
+plane2.position.y = 0.0;
+plane2.position.z = -1.85
+
+const plane3 = new THREE.Mesh(geometry, material);
+plane3.rotation.x = -Math.PI * 0.5;
+plane3.position.y = 0;
+plane3.position.z = -3.85; 
+
 scene.add(plane);
+scene.add(plane2);
+scene.add(plane3);
 
 // AmbientLight(color, intensity)
 const ambientLight = new THREE.AmbientLight("#ffffff", 15);
@@ -49,7 +73,6 @@ const windowSize = {
 };
 
 /* PerspectiveCamera(FoV, Aspect Ratio, Near Plane Distance, Far Plane Distance)
-  Don't fully understand everything yet. Just the basics.
   Near Clipping Plane is the visibility of the foreground. Higher value means that the anything close to the camera isn't visible. Opposite for lower values.
   Far Clipping Plane is the visibility of the background. Higher value means longer draw distance (Can see the scene further). Opposite for lower values.
 */
@@ -57,12 +80,12 @@ const camera = new THREE.PerspectiveCamera(
   75,
   windowSize.width / windowSize.height,
   0.01,
-  30
+  10 
 );
 
 camera.position.x = 0;
-camera.position.y = 0.1;
-camera.position.z = 0.9;
+camera.position.y = 0.06;
+camera.position.z = 1;
 
 // DEVTOOLS! Not meant for normal users/viewers.
 const controls = new OrbitControls(camera, canvas);
@@ -93,16 +116,31 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(Math.min(windowSize.devicePixelRatio), 2);
 });
 
-// Clock() is used for "proper framecounting" purposes animating something.
-const clock = new THREE.Clock()
+// Clock() tracks the elapsed time since the loop started.
+const clock = new THREE.Clock();
+const animationSpeed = 0.1;
 
 const updateFrame = () => {
+  stats.begin()
+
+  // Returns time in seconds.
   const elapsedTime = clock.getElapsedTime();
+  // Devtool
   controls.update();
-  plane.position.z = elapsedTime * 0.1;
+  /* Enables looping effect along with requestAnimationFrame.
+    (elapsedTime * speed) % 2 enables smooth z-movement. 
+    When '% 2' reaches 2, it resets the loop to 0. 
+    '- 2' in plane2 just staggers plane2.
+  */
+  plane.position.z = (elapsedTime * animationSpeed) % 2;
+  plane2.position.z = ((elapsedTime * animationSpeed) % 2) - 2;
+  plane3.position.z = ((elapsedTime * animationSpeed) % 2) - 4;
+
   renderer.render(scene, camera);
   // Call updateFrame on every frame passed.
   window.requestAnimationFrame(updateFrame);
+
+  stats.end()
 };
 
 updateFrame();
