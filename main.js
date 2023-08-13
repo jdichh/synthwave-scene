@@ -1,19 +1,31 @@
+/* To-do List™ 
+  Displacement map for terrain
+   - Middle geometry is flat
+   - Sides are "mountainous"
+   - Low poly or nah?
+*/
 import * as THREE from "three";
 import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
 
 const TEXTURE = "./public/assets/grid.webp";
+const TERRAIN = "./public/assets/terrain_data.webp";
+
 const textureLoader = new THREE.TextureLoader();
-const gridLandscape = textureLoader.load(TEXTURE)
+const gridLandscape = textureLoader.load(TEXTURE);
+const terrain = textureLoader.load(TERRAIN);
 
 const canvas = document.querySelector(".webGL");
 const scene = new THREE.Scene();
 
 // Geometry width is 1, height is 2, and then divided by 24 segments along the width and height to enhance terrain detail.
-const geometry = new THREE.PlaneGeometry(1, 2, 24, 24);
+const geometry = new THREE.PlaneGeometry(2, 2, 24, 24);
 
 // Material is the texture. Or if you're a gamer™, a weapon skin.
 const material = new THREE.MeshStandardMaterial({
   map: gridLandscape,
+  displacementMap: terrain,
+  // Height of "mountains".
+  displacementScale: 0.7,
 });
 // Geometry + Material = Mesh
 
@@ -41,8 +53,8 @@ const windowSize = {
 const camera = new THREE.PerspectiveCamera(
   75,
   windowSize.width / windowSize.height,
-  0.1,
-  20
+  0.01,
+  30
 );
 
 camera.position.x = 0;
@@ -80,10 +92,10 @@ window.addEventListener("resize", () => {
 
 const updateFrame = () => {
   controls.update();
-  renderer.render(scene, camera)
+  renderer.render(scene, camera);
 
   // Call updateFrame on every frame passed.
-  window.requestAnimationFrame(updateFrame)
-}
+  window.requestAnimationFrame(updateFrame);
+};
 
 updateFrame();
