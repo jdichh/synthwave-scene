@@ -6,6 +6,12 @@ import { ShaderPass } from "./node_modules/three/examples/jsm/postprocessing/Sha
 import { RGBShiftShader } from "./node_modules/three/examples/jsm/shaders/RGBShiftShader.js";
 import { GammaCorrectionShader } from "./node_modules/three/examples/jsm/shaders/GammaCorrectionShader.js";
 import { UnrealBloomPass } from "./node_modules/three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import WebGL from "three/addons/capabilities/WebGL.js";
+
+if (!WebGL.isWebGLAvailable()) {
+  const warning = WebGL.getWebGLErrorMessage();
+  document.getElementById("container").appendChild(warning);
+}
 
 // FPS Data
 // import Stats from 'stats.js';
@@ -280,15 +286,15 @@ export function playNextTrack() {
 playNextTrack();
 
 function toggleMusic() {
-  console.log("toggle")
+  console.log("toggle");
   if (isMusicPlaying) {
-    console.log("paused")
+    console.log("paused");
     audio.pause();
     iconElement.classList.remove("fas", "fa-music", "fa-sm");
     iconElement.classList.remove("fas", "fa-play", "fa-sm");
     iconElement.classList.add("fas", "fa-stop", "fa-sm");
   } else {
-    console.log("playing")
+    console.log("playing");
     if (!audio.paused) {
       playNextTrack();
     } else {

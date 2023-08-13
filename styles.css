@@ -8,6 +8,7 @@ body {
   margin: 0;
   overflow: hidden;
   height: 100%;
+  background-color: rgb(32, 32, 32);
 }
 
 canvas.webGL {
@@ -75,7 +76,7 @@ canvas.webGL {
 @media screen and (max-width: 1200px) {
   #music-toggle-button {
     right: 2.5%;
-    padding: 10px 20px; 
+    padding: 10px 20px;
   }
 
   #volume-slider {
@@ -87,7 +88,6 @@ canvas.webGL {
     background: none;
     border: none;
   }
-  
 }
 
 /* I don't know yet how to change the styling of the thumb on Chrome based browsers, sorry! */
