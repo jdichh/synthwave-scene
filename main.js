@@ -3,6 +3,9 @@
    - Middle geometry is flat
    - Sides are "mountainous"
    - Low poly or nah?
+  Animating terrain moving to camera.
+   - Can't do plane.position.z += 0.5 -> Varies on FPS. -> DONE!
+  Endless terrain
 */
 import * as THREE from "three";
 import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
@@ -90,10 +93,14 @@ window.addEventListener("resize", () => {
   renderer.setPixelRatio(Math.min(windowSize.devicePixelRatio), 2);
 });
 
-const updateFrame = () => {
-  controls.update();
-  renderer.render(scene, camera);
+// Clock() is used for "proper framecounting" purposes animating something.
+const clock = new THREE.Clock()
 
+const updateFrame = () => {
+  const elapsedTime = clock.getElapsedTime();
+  controls.update();
+  plane.position.z = elapsedTime * 0.1;
+  renderer.render(scene, camera);
   // Call updateFrame on every frame passed.
   window.requestAnimationFrame(updateFrame);
 };
