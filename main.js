@@ -10,7 +10,7 @@
    - Add fog?
 */
 import * as THREE from "three";
-import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
+// import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
 import { EffectComposer } from "./node_modules/three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "./node_modules/three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "./node_modules/three/examples/jsm/postprocessing/ShaderPass.js";
@@ -29,26 +29,33 @@ document.body.appendChild(stats.dom);
 
 // Colors
 const BLACK = "#000000";
+const PINK = "#ed11ff";
+const TURQUOISE = "#26ead7";
 
 const TEXTURE = "./public/assets/grid.webp";
 const TERRAIN = "./public/assets/terrain_data.webp";
+const SHINY = "./public/assets/shinystuff.webp"
 
 const textureLoader = new THREE.TextureLoader();
 const gridLandscape = textureLoader.load(TEXTURE);
 const terrain = textureLoader.load(TERRAIN);
+const shinystuff = textureLoader.load(SHINY);
 
 const canvas = document.querySelector(".webGL");
 const scene = new THREE.Scene();
 
-// Landscape width is 3, height is 2, and then divided by 24 segments along the width and height to enhance terrain detail.
-const geometry = new THREE.PlaneGeometry(3, 2, 24, 24);
+// Landscape width is 1, height is 2, and then divided by 24 segments along the width and height to enhance terrain detail.
+const geometry = new THREE.PlaneGeometry(1, 2, 24, 24);
 
 // Material is the texture. Or if you're a gamer™, a weapon skin.
 const material = new THREE.MeshStandardMaterial({
   map: gridLandscape,
   displacementMap: terrain,
   // Height of "mountains".
-  displacementScale: 0.8,
+  displacementScale: 0.6,
+  metalnessMap: shinystuff,
+  metalness: 1,
+  roughness: 0.65
 });
 // Geometry + Material = Mesh
 
@@ -73,8 +80,28 @@ scene.add(plane2);
 scene.add(plane3);
 
 // AmbientLight(color, intensity)
-const ambientLight = new THREE.AmbientLight("#ffffff", 15);
+const ambientLight = new THREE.AmbientLight("#TURQUOISE", 20);
 scene.add(ambientLight);
+
+// Right spotlight pointing to the left.
+const spotlight = new THREE.SpotLight(TURQUOISE, 25, 100, Math.PI * 0.1, 0.25);
+spotlight.position.set(0.5, 0.75, 2.2);
+// Specific target for the right spotlight.
+spotlight.target.position.x = -0.25;
+spotlight.target.position.y = 0.2;
+spotlight.target.position.z = 1;
+scene.add(spotlight);
+scene.add(spotlight.target);
+
+// Left spotlight pointing to the right.
+const spotlight2 = new THREE.SpotLight(PINK, 25, 100, Math.PI * 0.1, 0.25);
+spotlight2.position.set(-0.5, 0.75, 2.2);
+// Specific target for the left spotlight.
+spotlight2.target.position.x = 0.25;
+spotlight2.target.position.y = 0.2;
+spotlight2.target.position.z = 1;
+scene.add(spotlight2);
+scene.add(spotlight2.target);
 
 const windowSize = {
   width: window.innerWidth,
@@ -86,20 +113,20 @@ const windowSize = {
   Far Clipping Plane is the visibility of the background. Higher value means longer draw distance (Can see the scene further). Opposite for lower values.
 */
 const camera = new THREE.PerspectiveCamera(
-  90,
+  75,
   windowSize.width / windowSize.height,
   0.01,
   10 
 );
 
 camera.position.x = 0;
-camera.position.y = 0.125;
+camera.position.y = 0.05;
 camera.position.z = 1;
 
 // DEVTOOLS! Not meant for normal users/viewers.
-const controls = new OrbitControls(camera, canvas);
+// const controls = new OrbitControls(camera, canvas);
 // Enabling damping is like scroll-behavior: smooth in CSS.
-controls.enableDamping = true;
+// controls.enableDamping = true;
 // DEVTOOLS!
 
 const renderer = new THREE.WebGLRenderer({
@@ -112,7 +139,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 // scene.background = backgroundColor;
 
 // Fog(color, near clip, far clip)
-const fog = new THREE.Fog(BLACK, 1, 4.5);
+const fog = new THREE.Fog(BLACK, 1, 2.25);
 scene.fog = fog
 
 const effectComposer = new EffectComposer(renderer);
@@ -123,18 +150,16 @@ const renderPass = new RenderPass(scene, camera);
 effectComposer.addPass(renderPass);
 
 const rgbShiftPass = new ShaderPass(RGBShiftShader);
-rgbShiftPass.uniforms['amount'].value = 0.0006;
+rgbShiftPass.uniforms['amount'].value = 0.001;
 effectComposer.addPass(rgbShiftPass);
 
 const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader);
 effectComposer.addPass(gammaCorrectionPass);
 
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1, 0.2, 0.6);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.9, 0.5, 0.85);
 effectComposer.addPass(bloomPass);
 
-// Event listener for resizing events.
 window.addEventListener("resize", () => {
-  // Update size based on current browser's size.
   windowSize.width = window.innerWidth;
   windowSize.height = window.innerHeight;
 
@@ -144,7 +169,6 @@ window.addEventListener("resize", () => {
   camera.aspect = windowSize.width / windowSize.height;
   camera.updateProjectionMatrix();
 
-  // Update renderer window size.
   renderer.setSize(windowSize.width / windowSize.height);
   renderer.setPixelRatio(Math.min(windowSize.devicePixelRatio), 2);
 
@@ -162,7 +186,7 @@ const updateFrame = () => {
   // Returns time in seconds.
   const elapsedTime = clock.getElapsedTime();
   // Devtool
-  controls.update();
+  // controls.update();
   /* Enables looping effect along with requestAnimationFrame.
     (elapsedTime * speed) % 2 enables smooth z-movement. 
     When '% 2' reaches 2, it resets the loop to 0. 
