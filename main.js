@@ -24,7 +24,7 @@ if (!WebGL.isWebGLAvailable()) {
 
 // Colors
 const PINK = "#FF0133";
-const WHITE = "#CCCCCC";
+const WHITE = "#AAAAAA";
 const TURQUOISE = "#60E4FF";
 
 const TEXTURE = "./assets/grid.webp";
@@ -43,14 +43,14 @@ const scene = new THREE.Scene();
 scene.background = sky;
 
 // Landscape width is 1.25, height is 2, and then divided by 24 segments along the width and height to enhance terrain detail.
-const geometry = new THREE.PlaneGeometry(1.25, 2, 24, 24);
+const geometry = new THREE.PlaneGeometry(1.5, 2, 24, 24);
 
 // Material is the texture. Or if you're a gamer™, a weapon skin.
 const material = new THREE.MeshStandardMaterial({
   map: gridLandscape,
   displacementMap: terrain,
   // Height of "mountains".
-  displacementScale: 0.8,
+  displacementScale: 0.85,
   metalnessMap: shinystuff,
   metalness: 1,
   roughness: 0.65,
@@ -60,20 +60,23 @@ const material = new THREE.MeshStandardMaterial({
 // Sun
 const SUN_COLOR = "#707070";
 const SUNRAY_INTENSITY = 10;
-const sunRadius = 1.7;
+const SUN_GRADIENT_COLOR = textureLoader.load("./assets/sun.webp")
+const sunRadius = 1.4;
+
 
 const sunGeometry = new THREE.SphereGeometry(sunRadius, 32, 32);
 const sunMaterial = new THREE.MeshStandardMaterial({
   color: SUN_COLOR,
   emissive: SUN_COLOR,
+  // map: SUN_GRADIENT_COLOR,
 });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-sun.position.set(0, 0.4, -4);
+sun.position.set(0, 0.5, -3.5);
 scene.add(sun);
 
 // Sun rays
 const sunLight = new THREE.DirectionalLight(SUN_COLOR, SUNRAY_INTENSITY);
-sunLight.position.set(0, 1, -1.25);
+sunLight.position.set(0, 1, -1.15);
 scene.add(sunLight);
 
 // Plane (the landscape) is positioned in front of the camera.
@@ -97,7 +100,7 @@ scene.add(plane2);
 scene.add(plane3);
 
 // AmbientLight(color, intensity)
-const ambientLight = new THREE.AmbientLight(WHITE, 10);
+const ambientLight = new THREE.AmbientLight(WHITE, 15);
 scene.add(ambientLight);
 
 // Right spotlight pointing to the left.
@@ -192,7 +195,7 @@ effectComposer.addPass(bloomPass);
 
 // CRT Filter
 const filmPass = new FilmPass(
-  0.35, // noise intensity
+  0.5, // noise intensity
   0.75, // scanline intensity
   2048, // scanline count
   false // grayscale
