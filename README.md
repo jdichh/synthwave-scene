@@ -1,5 +1,10 @@
 ﻿# A vaporwave™ scene in Three.js.
  I made this because I wanted to learn more about Three.js. And I quite like 3D stuff, and vaporwave.
+## Checklist
+<ul>
+ <li>Stars on skybox</li>
+</ul>
+
 ## Project setup
 ```
 pnpm install
