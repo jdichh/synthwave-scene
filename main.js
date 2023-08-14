@@ -73,7 +73,7 @@ scene.add(sun);
 
 // Sun rays
 const sunLight = new THREE.DirectionalLight(SUN_COLOR, SUNRAY_INTENSITY);
-sunLight.position.set(0, 1, -1); // Set the direction of the light
+sunLight.position.set(0, 1, -1.25);
 scene.add(sunLight);
 
 // Plane (the landscape) is positioned in front of the camera.
@@ -101,7 +101,13 @@ const ambientLight = new THREE.AmbientLight(WHITE, 10);
 scene.add(ambientLight);
 
 // Right spotlight pointing to the left.
-const spotlight = new THREE.SpotLight(PINK, 100, 100, Math.PI * 0.1, 0.25);
+const spotlight = new THREE.SpotLight(
+  PINK, 
+  100, 
+  100, 
+  Math.PI * 0.1, 
+  0.25
+);
 spotlight.position.set(0.5, 0.75, 2.1);
 // Specific target for the right spotlight.
 spotlight.target.position.x = 0.25;
@@ -136,7 +142,7 @@ const windowSize = {
   Far Clipping Plane is the visibility of the background. Higher value means longer draw distance (Can see the scene further). Opposite for lower values.
 */
 const camera = new THREE.PerspectiveCamera(
-  90,
+  85,
   windowSize.width / windowSize.height,
   0.01,
   10
@@ -212,7 +218,7 @@ window.addEventListener("resize", () => {
 
 // Clock() tracks the elapsed time since the loop started.
 const clock = new THREE.Clock();
-const animationSpeed = 0.5;
+const animationSpeed = 0.075;
 
 const updateFrame = () => {
   // stats.begin()
