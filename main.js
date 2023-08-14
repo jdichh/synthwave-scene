@@ -1,5 +1,5 @@
 import * as THREE from "three";
-// import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
+import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
 import { RGBShiftShader } from "./node_modules/three/examples/jsm/shaders/RGBShiftShader.js";
 import { EffectComposer } from "./node_modules/three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "./node_modules/three/examples/jsm/postprocessing/RenderPass.js";
@@ -25,7 +25,7 @@ if (!WebGL.isWebGLAvailable()) {
 // Colors
 const PINK = "#F2247F";
 const WHITE = "#999999";
-const NAVY = "#120032";
+const INDIGO = "#52069E";
 
 const TEXTURE = "./assets/grid.webp";
 const TERRAIN = "./assets/terrain_data.webp";
@@ -104,8 +104,8 @@ const ambientLight = new THREE.AmbientLight(WHITE, AMBIENT_LIGHT_INTENSITY);
 scene.add(ambientLight);
 
 // Right spotlight pointing to the left.
-const spotlight = new THREE.SpotLight(PINK, 100, 15, Math.PI * 0.1, 0.25);
-spotlight.position.set(0.5, 0.75, 2.1);
+const spotlight = new THREE.SpotLight(PINK, 90, 15, Math.PI * 0.1, 0.25);
+spotlight.position.set(-1, 0.5, 2.5);
 // Specific target for the right spotlight.
 spotlight.target.position.x = 0.25;
 spotlight.target.position.y = 0.25;
@@ -114,8 +114,8 @@ scene.add(spotlight);
 scene.add(spotlight.target);
 
 // Left spotlight pointing to the right.
-const spotlight2 = new THREE.SpotLight(NAVY, 100, 15, Math.PI * 0.1, 0.25);
-spotlight2.position.set(-0.5, 0.75, 2.1);
+const spotlight2 = new THREE.SpotLight(INDIGO, 200, 15, Math.PI * 0.1, 0.25);
+spotlight2.position.set(1, 0.5, 2.5);
 // Specific target for the left spotlight.
 spotlight2.target.position.x = 0.25;
 spotlight2.target.position.y = 0.25;
@@ -145,8 +145,8 @@ camera.position.z = 1;
 
 // DEVTOOLS! Not meant for normal users/viewers.
 // DEBUG CAM
-// const controls = new OrbitControls(camera, canvas);
-// controls.enableDamping = true;
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
 // Enabling damping is like scroll-behavior: smooth in CSS.
 // DEVTOOLS!
 
@@ -217,7 +217,7 @@ const updateFrame = () => {
   // Returns time in seconds.
   const elapsedTime = clock.getElapsedTime();
   // Devtool
-  // controls.update();
+  controls.update();
   /* Enables looping effect along with requestAnimationFrame.
     (elapsedTime * speed) % 2 enables smooth z-movement. 
     When '% 2' reaches 2, it resets the loop to 0. 
