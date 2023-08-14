@@ -221,7 +221,7 @@ window.addEventListener("resize", () => {
 
 // Clock() tracks the elapsed time since the loop started.
 const clock = new THREE.Clock();
-const animationSpeed = 0.075;
+const animationSpeed = 0.05;
 
 const updateFrame = () => {
   // stats.begin()
@@ -254,9 +254,12 @@ Yes, I can use any music by HOME.
 https://twitter.com/RNDYGFFE/status/1595515631020957703 */
 
 const musicFiles = [
-  "./assets/tides.mp3",
-  "./assets/resonance.mp3",
-  "./assets/finallylanding.mp3",
+  "./assets/music/tides.mp3",
+  "./assets/music/resonance.mp3",
+  "./assets/music/finallylanding.mp3",
+  "./assets/music/scanlines.mp3",
+  "./assets/music/twistedlight.mp3",
+  "./assets/music/atlas.mp3",
 ];
 
 const preloadedMusicFiles = musicFiles.map((musicFile) => {
