@@ -1,4 +1,4 @@
-﻿# A vaporwave™ scene in Three.js.
+﻿# A vaporwave™ scene with Three.js.
  I made this because I wanted to learn more about Three.js. And I quite like 3D stuff, and vaporwave.
 ## Checklist
 <ul>
