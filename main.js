@@ -319,15 +319,12 @@ export function playNextTrack() {
 playNextTrack();
 
 function toggleMusic() {
-  console.log("toggle");
   if (isMusicPlaying) {
-    console.log("paused");
     audio.pause();
     iconElement.classList.remove("fas", "fa-music", "fa-sm");
     iconElement.classList.remove("fas", "fa-play", "fa-sm");
     iconElement.classList.add("fas", "fa-stop", "fa-sm");
   } else {
-    console.log("playing");
     if (!audio.paused) {
       playNextTrack();
     } else {
