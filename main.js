@@ -60,7 +60,7 @@ const material = new THREE.MeshStandardMaterial({
 // Sun
 const SUN_COLOR = "#707070";
 const SUNRAY_INTENSITY = 10;
-const sunRadius = 1.6;
+const sunRadius = 1.7;
 
 const sunGeometry = new THREE.SphereGeometry(sunRadius, 32, 32);
 const sunMaterial = new THREE.MeshStandardMaterial({
@@ -68,7 +68,7 @@ const sunMaterial = new THREE.MeshStandardMaterial({
   emissive: SUN_COLOR,
 });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-sun.position.set(0, 0.3, -4);
+sun.position.set(0, 0.4, -4);
 scene.add(sun);
 
 // Sun rays
@@ -212,7 +212,7 @@ window.addEventListener("resize", () => {
 
 // Clock() tracks the elapsed time since the loop started.
 const clock = new THREE.Clock();
-const animationSpeed = 0.03;
+const animationSpeed = 0.5;
 
 const updateFrame = () => {
   // stats.begin()
