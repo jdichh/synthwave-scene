@@ -23,9 +23,9 @@ if (!WebGL.isWebGLAvailable()) {
 // document.body.appendChild(stats.dom);
 
 // Colors
-const PINK = "#FF0133";
-const WHITE = "#AAAAAA";
-const TURQUOISE = "#60E4FF";
+const PINK = "#F2247F";
+const WHITE = "#999999";
+const NAVY = "#120032";
 
 const TEXTURE = "./assets/grid.webp";
 const TERRAIN = "./assets/terrain_data.webp";
@@ -42,7 +42,7 @@ const canvas = document.querySelector(".webGL");
 const scene = new THREE.Scene();
 scene.background = sky;
 
-// Landscape width is 1.25, height is 2, and then divided by 24 segments along the width and height to enhance terrain detail.
+// Landscape width is 1.5, height is 2, and then divided by 24 segments along the width and height to enhance terrain detail.
 const geometry = new THREE.PlaneGeometry(1.5, 2, 24, 24);
 
 // Material is the texture. Or if you're a gamer™, a weapon skin.
@@ -58,17 +58,16 @@ const material = new THREE.MeshStandardMaterial({
 // Geometry + Material = Mesh
 
 // Sun
-const SUN_COLOR = "#707070";
-const SUNRAY_INTENSITY = 10;
-const SUN_GRADIENT_COLOR = textureLoader.load("./assets/sun.webp")
-const sunRadius = 1.4;
-
+const SUN_COLOR = "#DDDDDD";
+const SUNRAY_INTENSITY = 1.25;
+const SUN_GRADIENT_COLOR = textureLoader.load("./assets/sun.webp");
+const sunRadius = 1;
 
 const sunGeometry = new THREE.SphereGeometry(sunRadius, 32, 32);
 const sunMaterial = new THREE.MeshStandardMaterial({
-  color: SUN_COLOR,
-  emissive: SUN_COLOR,
-  // map: SUN_GRADIENT_COLOR,
+  // color: SUN_COLOR,
+  // emissive: SUN_COLOR,
+  map: SUN_GRADIENT_COLOR,
 });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 sun.position.set(0, 0.5, -3.5);
@@ -76,7 +75,7 @@ scene.add(sun);
 
 // Sun rays
 const sunLight = new THREE.DirectionalLight(SUN_COLOR, SUNRAY_INTENSITY);
-sunLight.position.set(0, 1, -1.15);
+sunLight.position.set(0, 1, -1.5);
 scene.add(sunLight);
 
 // Plane (the landscape) is positioned in front of the camera.
@@ -100,17 +99,12 @@ scene.add(plane2);
 scene.add(plane3);
 
 // AmbientLight(color, intensity)
-const ambientLight = new THREE.AmbientLight(WHITE, 15);
+const AMBIENT_LIGHT_INTENSITY = 11;
+const ambientLight = new THREE.AmbientLight(WHITE, AMBIENT_LIGHT_INTENSITY);
 scene.add(ambientLight);
 
 // Right spotlight pointing to the left.
-const spotlight = new THREE.SpotLight(
-  PINK, 
-  100, 
-  100, 
-  Math.PI * 0.1, 
-  0.25
-);
+const spotlight = new THREE.SpotLight(PINK, 100, 15, Math.PI * 0.1, 0.25);
 spotlight.position.set(0.5, 0.75, 2.1);
 // Specific target for the right spotlight.
 spotlight.target.position.x = 0.25;
@@ -120,13 +114,7 @@ scene.add(spotlight);
 scene.add(spotlight.target);
 
 // Left spotlight pointing to the right.
-const spotlight2 = new THREE.SpotLight(
-  TURQUOISE,
-  100,
-  100,
-  Math.PI * 0.1,
-  0.25
-);
+const spotlight2 = new THREE.SpotLight(NAVY, 100, 15, Math.PI * 0.1, 0.25);
 spotlight2.position.set(-0.5, 0.75, 2.1);
 // Specific target for the left spotlight.
 spotlight2.target.position.x = 0.25;
@@ -177,7 +165,7 @@ const renderPass = new RenderPass(scene, camera);
 effectComposer.addPass(renderPass);
 
 const rgbShiftPass = new ShaderPass(RGBShiftShader);
-rgbShiftPass.uniforms["amount"].value = 0.0008;
+rgbShiftPass.uniforms["amount"].value = 0.0007;
 effectComposer.addPass(rgbShiftPass);
 
 const bloomPass = new UnrealBloomPass(
@@ -188,14 +176,14 @@ const bloomPass = new UnrealBloomPass(
 );
 
 // These work somehow!
-bloomPass.strength = 0.3;
+bloomPass.strength = 0.25;
 bloomPass.threshold = 0;
 bloomPass.radius = 1;
 effectComposer.addPass(bloomPass);
 
 // CRT Filter
 const filmPass = new FilmPass(
-  0.5, // noise intensity
+  0.2, // noise intensity
   0.75, // scanline intensity
   2048, // scanline count
   false // grayscale
@@ -252,26 +240,11 @@ updateFrame();
 /*  Music 
 Yes, I can use any music by HOME. 
 https://twitter.com/RNDYGFFE/status/1595515631020957703 */
-
-const musicFiles = [
-  "./assets/music/tides.mp3",
-  "./assets/music/resonance.mp3",
-  "./assets/music/finallylanding.mp3",
-  "./assets/music/scanlines.mp3",
-  "./assets/music/twistedlight.mp3",
-  "./assets/music/atlas.mp3",
-];
-
-const preloadedMusicFiles = musicFiles.map((musicFile) => {
-  const audio = new Audio();
-  audio.src = musicFile;
-  audio.preload = "auto";
-  return audio;
-});
-
-let currentMusicIndex = Math.floor(Math.random() * musicFiles.length);
-let audio = preloadedMusicFiles[currentMusicIndex];
 let isMusicPlaying = true;
+
+const musicFile = "./assets/music/twistedlight.mp3";
+const audio = new Audio(musicFile);
+audio.preload = "auto";
 
 const musicToggleButton = document.createElement("button");
 musicToggleButton.setAttribute("id", "music-toggle-button");
@@ -297,26 +270,19 @@ canvas.parentNode.appendChild(volumeSlider);
 audio.volume = 0.25;
 
 // Set the initial volume based on the slider value.
-export function updateVolume() {
+function updateVolume() {
   const volume = parseFloat(volumeSlider.value);
   audio.volume = volume;
 }
 
 // audio.playbackRate is for testing purposes, if music will autoplay after the current one has ended.
-export function playNextTrack() {
-  audio.removeEventListener("ended", playNextTrack);
-  currentMusicIndex = Math.floor(Math.random() * musicFiles.length);
-  audio = preloadedMusicFiles[currentMusicIndex];
-  audio.currentTime = 0;
+function playMusic() {
   updateVolume();
-  // audio.playbackRate = 5
-  audio.addEventListener("ended", playNextTrack);
-  if (isMusicPlaying) {
-    audio.play();
-  }
+  audio.currentTime = 0;
+  audio.loop = true;
+  // audio.playbackRate = 5;
+  audio.play();
 }
-
-playNextTrack();
 
 function toggleMusic() {
   if (isMusicPlaying) {
@@ -324,17 +290,15 @@ function toggleMusic() {
     iconElement.classList.remove("fas", "fa-music", "fa-sm");
     iconElement.classList.remove("fas", "fa-play", "fa-sm");
     iconElement.classList.add("fas", "fa-stop", "fa-sm");
-  } else {
-    if (!audio.paused) {
-      playNextTrack();
-    } else {
-      playNextTrack();
-      audio.play();
-      iconElement.classList.remove("fas", "fa-music", "fa-sm");
-      iconElement.classList.remove("fas", "fa-stop", "fa-sm");
-      iconElement.classList.add("fas", "fa-play", "fa-sm");
-    }
+  } else if (audio.paused) {
+    audio.play();
+    iconElement.classList.remove("fas", "fa-music", "fa-sm");
+    iconElement.classList.remove("fas", "fa-stop", "fa-sm");
+    iconElement.classList.add("fas", "fa-play", "fa-sm");
   }
+
   isMusicPlaying = !isMusicPlaying;
   updateVolume();
 }
+
+playMusic();
