@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
+// import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
 import { RGBShiftShader } from "./node_modules/three/examples/jsm/shaders/RGBShiftShader.js";
 import { EffectComposer } from "./node_modules/three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "./node_modules/three/examples/jsm/postprocessing/RenderPass.js";
@@ -145,8 +145,8 @@ camera.position.z = 1;
 
 // DEVTOOLS! Not meant for normal users/viewers.
 // DEBUG CAM
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
+// const controls = new OrbitControls(camera, canvas);
+// controls.enableDamping = true;
 // Enabling damping is like scroll-behavior: smooth in CSS.
 // DEVTOOLS!
 
@@ -201,7 +201,7 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
 
   renderer.setSize(windowSize.width, windowSize.height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio), 2);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   effectComposer.setSize(windowSize.width, windowSize.height);
   effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -217,7 +217,7 @@ const updateFrame = () => {
   // Returns time in seconds.
   const elapsedTime = clock.getElapsedTime();
   // Devtool
-  controls.update();
+  // controls.update();
   /* Enables looping effect along with requestAnimationFrame.
     (elapsedTime * speed) % 2 enables smooth z-movement. 
     When '% 2' reaches 2, it resets the loop to 0. 
