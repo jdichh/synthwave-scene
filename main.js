@@ -260,14 +260,11 @@ volumeSlider.setAttribute("type", "range");
 volumeSlider.setAttribute("min", "0");
 volumeSlider.setAttribute("max", "1");
 volumeSlider.setAttribute("step", "0.01");
-volumeSlider.setAttribute("value", "0.25");
+volumeSlider.setAttribute("value", "0.3");
 volumeSlider.addEventListener("input", updateVolume);
 
 canvas.parentNode.appendChild(musicToggleButton);
 canvas.parentNode.appendChild(volumeSlider);
-
-// Default volume in case the user has autoplay enabled to prevent the user to be deaf after the page loads.
-audio.volume = 0.25;
 
 // Set the initial volume based on the slider value.
 function updateVolume() {
@@ -291,6 +288,7 @@ function toggleMusic() {
     iconElement.classList.remove("fas", "fa-play", "fa-sm");
     iconElement.classList.add("fas", "fa-stop", "fa-sm");
   } else if (audio.paused) {
+    // audio.currentTime = 0;
     audio.play();
     iconElement.classList.remove("fas", "fa-music", "fa-sm");
     iconElement.classList.remove("fas", "fa-stop", "fa-sm");
