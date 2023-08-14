@@ -288,7 +288,7 @@ function toggleMusic() {
     iconElement.classList.remove("fas", "fa-play", "fa-sm");
     iconElement.classList.add("fas", "fa-stop", "fa-sm");
   } else if (audio.paused) {
-    // audio.currentTime = 0;
+    audio.currentTime = 0;
     audio.play();
     iconElement.classList.remove("fas", "fa-music", "fa-sm");
     iconElement.classList.remove("fas", "fa-stop", "fa-sm");
