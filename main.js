@@ -183,7 +183,7 @@ effectComposer.addPass(bloomPass);
 
 // CRT Filter
 const filmPass = new FilmPass(
-  0.2, // noise intensity
+  0.4, // noise intensity
   0.75, // scanline intensity
   2048, // scanline count
   false // grayscale
@@ -209,7 +209,7 @@ window.addEventListener("resize", () => {
 
 // Clock() tracks the elapsed time since the loop started.
 const clock = new THREE.Clock();
-const animationSpeed = 0.05;
+const animationSpeed = 0.02;
 
 const updateFrame = () => {
   // stats.begin()
@@ -242,7 +242,7 @@ Yes, I can use any music by HOME.
 https://twitter.com/RNDYGFFE/status/1595515631020957703 */
 let isMusicPlaying = true;
 
-const musicFile = "./assets/music/twistedlight.mp3";
+const musicFile = "./assets/music/home - atlas.mp3";
 const audio = new Audio(musicFile);
 audio.preload = "auto";
 
@@ -260,7 +260,7 @@ volumeSlider.setAttribute("type", "range");
 volumeSlider.setAttribute("min", "0");
 volumeSlider.setAttribute("max", "1");
 volumeSlider.setAttribute("step", "0.01");
-volumeSlider.setAttribute("value", "0.3");
+volumeSlider.setAttribute("value", "0.2");
 volumeSlider.addEventListener("input", updateVolume);
 
 canvas.parentNode.appendChild(musicToggleButton);
