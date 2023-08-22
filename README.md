@@ -4,8 +4,8 @@
 <ul>
  <li><strike>Migrate to React.</strike></li>
 </ul>
-## Notice
-This is the "old" version. I've migrated it into React [here](https://github.com/jdichh/synthwave-scene-REACT). 
+
+UPDATE (8/22/2023): This is the "old" version. I've migrated it into React [here](https://github.com/jdichh/synthwave-scene-REACT). 
 
 ## Project setup
 ```
