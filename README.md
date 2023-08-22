@@ -2,8 +2,10 @@
  I made this because I wanted to learn more about Three.js. And I quite like 3D stuff, and the aesthetic.
 ## Checklist
 <ul>
- <li><strike>Stars on skybox</strike></li>
+ <li><strike>Migrate to React.</strike></li>
 </ul>
+## Notice
+This is the "old" version. I've migrated it into React [here](https://github.com/jdichh/synthwave-scene-REACT). 
 
 ## Project setup
 ```
