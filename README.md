@@ -1,5 +1,5 @@
-﻿# A synthwave scene with Three.js.
- I made this because I wanted to learn more about Three.js. And I quite like 3D stuff, and the aesthetic.
+﻿# Synthwave scene made with Three.js.
+ I made this because I wanted to learn more about Three.js.
 ## Checklist
 <ul>
  <li><strike>Migrate to React.</strike></li>
