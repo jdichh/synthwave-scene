@@ -1,5 +1,5 @@
 ﻿# Synthwave scene made with Three.js.
- I made this because I wanted to learn more about Three.js.
+ A simple synthwave scene accompanied with [music by HOME](https://open.spotify.com/track/4vhkTMmOasNZF85mHQWELi?si=4d67c46649d4405c).
 ## Checklist
 <ul>
  <li><strike>Migrate to React.</strike></li>
